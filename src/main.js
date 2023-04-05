@@ -1,9 +1,12 @@
+// main.js: 入口 js 文件，影响全局，作用是引入全局使用的库、公共的样式和方法、设置路由等。
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import Element from "element-ui"
-import 'element-ui/lib/theme-chalk/index.css';
+import 'element-ui/lib/theme-chalk/index.css'
+//需要将 permission.js 手动引进到 main.js 实现全局配置，不然不会进行生效的
+import './permission' // permission control
 
 Vue.config.productionTip = false
 Vue.use(Element)

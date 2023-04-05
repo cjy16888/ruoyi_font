@@ -16,7 +16,7 @@ const routes = [
   {
     //'' 空就代表的是 '/'
     path: '',
-    name: 'layout',
+    name: 'Layout',
     //这是 layout 下面的 index.vue
     component: layout
   }
