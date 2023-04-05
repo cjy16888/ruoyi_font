@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import layout from '@/layout'
 
 Vue.use(VueRouter)
 
@@ -11,6 +12,13 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/login.vue')
+  },
+  {
+    //'' 空就代表的是 '/'
+    path: '',
+    name: 'layout',
+    //这是 layout 下面的 index.vue
+    component: layout
   }
 ]
 

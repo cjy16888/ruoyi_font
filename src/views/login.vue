@@ -68,7 +68,7 @@
 
 <script>
 //导入包
-import { getCondeImg, login } from '@/api/login'
+import { getCondeImg,  } from '@/api/login'
 
 //这个导出，其实是给自己上面用的
 export default {
@@ -133,12 +133,17 @@ export default {
       //如果前面的 rules 规则校验全部通过了，那么 valid 就是 true
       this.$refs.loginForm.validate(valid => {
         if (valid){
-          const username = this.loginForm.username
-          const password = this.loginForm.password
-          const code = this.loginForm.code
-          const uuid = this.loginForm.uuid
-          login(username,password,code,uuid).then(res => {
-            console.log("xxjs登录验证", res)
+          //定位到 store 文件下面的 Login （actions）方法，数据是 loginForm
+          //通过 promise 对象返回 res 数据的结果
+          this.$store.dispatch('Login',this.loginForm).then(() => {
+            //这个 this.redirect 值的是什么
+            this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
+          }).catch(err => {
+            console.log("login 捕获异常",err)
+            if (this.captchaEnabled){
+              //重新获取一下验证码，进行重新登录，不要我们进行手动的刷新页面获取验证码
+              this.getCode()
+            }
           })
         }
       })

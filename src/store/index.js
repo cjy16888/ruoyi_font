@@ -1,17 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import User from '@/store/modules/user'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-  },
-  getters: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+  //相当于 pom 文件的 子模块导入
   modules: {
+    User
   }
 })
