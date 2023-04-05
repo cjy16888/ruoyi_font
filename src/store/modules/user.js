@@ -1,9 +1,10 @@
 import { login } from '@/api/login'
+import { getToken, setToken, } from '@/utils/auth'
 
 //类似 java定义一个实体对象，接受数据用的，vo 数据
 const user = {
   state: {
-    token: '',
+    token: getToken(),
     name: '',
     avatar: '',
     roles: [],
@@ -42,7 +43,7 @@ const user = {
       //promise 对象，给调用这个方法的对象返回结果，供给它进行下一步的处理
       return new Promise((resolve, reject) => {
         login(username, password, code, uuid).then(res => {
-          // setToken(res.token)
+          setToken(res.token)
           //调用 mutations 方法
           commit('SET_TOKEN', res.token)
           //相当于 return 返回结果,() 表示返回的数据
