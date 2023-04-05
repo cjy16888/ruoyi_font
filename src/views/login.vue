@@ -96,6 +96,17 @@ export default {
         ],
         code: [{ required: true, trigger: "change", message: "请输入验证码" }]
       },
+      redirect: undefined
+    }
+  },
+  //监听对象，$route 没发生变化，执行一次 handler
+  watch: {
+    $route: {
+      handler: function(route) {
+        this.redirect = route.query && route.query.redirect;
+      },
+      //从一次变化就执行 handler
+      immediate: true
     }
   },
   //调用方法，自动调用
@@ -136,7 +147,7 @@ export default {
           //定位到 store 文件下面的 Login （actions）方法，数据是 loginForm
           //通过 promise 对象返回 res 数据的结果
           this.$store.dispatch('Login',this.loginForm).then(() => {
-            //这个 this.redirect 值的是什么
+            //这个 this.redirect 指的是，我们被拦截后登录成功，重定向到之前被拦截的页面
             this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
           }).catch(err => {
             console.log("login 捕获异常",err)
