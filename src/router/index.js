@@ -6,6 +6,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    //URL 上面直接打的地址
     path: '/login',
     name: 'login',
     // route level code-splitting

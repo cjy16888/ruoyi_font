@@ -1,6 +1,7 @@
-import { login } from '@/api/login'
+import { login , getInfo} from '@/api/login'
 import { getToken, setToken, } from '@/utils/auth'
 
+//给外面提供的请求后端的方法，接受数据结果 VO 进行封装的操作
 //类似 java定义一个实体对象，接受数据用的，vo 数据
 const user = {
   state: {
@@ -22,9 +23,9 @@ const user = {
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
-    SET_ROLES: (state, roles) => {
-      state.roles = roles
-    },
+    // SET_ROLES: (state, roles) => {
+    //   state.roles = roles
+    // },
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions
     }
@@ -48,6 +49,18 @@ const user = {
           commit('SET_TOKEN', res.token)
           //相当于 return 返回结果,() 表示返回的数据
           resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
+    // 获取用户信息
+    GetInfo() {
+      return new Promise((resolve, reject) => {
+        //访问后端服务器
+        getInfo().then(res => {
+          resolve(res)
         }).catch(error => {
           reject(error)
         })

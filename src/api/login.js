@@ -10,7 +10,10 @@ export function getCondeImg() {
     url: '/captchaImage',
     method: 'get',
     //这个不设置的话，用的就是 request 中，可以覆盖
-    timeout: 20000
+    timeout: 20000,
+    headers: {
+      isToken: false
+    },
   })
 }
 
@@ -26,7 +29,18 @@ export function login(username, password, code, uuid) {
   //发送请求，使用 request.js 中的 axios 实例
   return request({
     url: '/login',
+    headers: {
+      isToken: false
+    },
     method: 'post',
     data: data
+  })
+}
+
+// 获取用户详细信息
+export function getInfo() {
+  return request({
+    url: '/getInfo',
+    method: 'get'
   })
 }
