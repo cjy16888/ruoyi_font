@@ -1,5 +1,5 @@
-import { login , getInfo} from '@/api/login'
-import { getToken, setToken, } from '@/utils/auth'
+import { login, getInfo, logout } from '@/api/login'
+import { getToken, removeToken, setToken, } from '@/utils/auth'
 
 //给外面提供的请求后端的方法，接受数据结果 VO 进行封装的操作
 //类似 java定义一个实体对象，接受数据用的，vo 数据
@@ -80,41 +80,22 @@ const user = {
       })
     },
 
-    // 获取用户信息
-    // GetInfo({ commit, state }) {
-    //   return new Promise((resolve, reject) => {
-    //     getInfo().then(res => {
-    //       const user = res.user
-    //       const avatar = (user.avatar == "" || user.avatar == null) ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
-    //       if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-    //         commit('SET_ROLES', res.roles)
-    //         commit('SET_PERMISSIONS', res.permissions)
-    //       } else {
-    //         commit('SET_ROLES', ['ROLE_DEFAULT'])
-    //       }
-    //       commit('SET_NAME', user.userName)
-    //       commit('SET_AVATAR', avatar)
-    //       resolve(res)
-    //     }).catch(error => {
-    //       reject(error)
-    //     })
-    //   })
-    // },
-
-    // // 退出系统
-    // LogOut({ commit, state }) {
-    //   return new Promise((resolve, reject) => {
-    //     logout(state.token).then(() => {
-    //       commit('SET_TOKEN', '')
-    //       commit('SET_ROLES', [])
-    //       commit('SET_PERMISSIONS', [])
-    //       removeToken()
-    //       resolve()
-    //     }).catch(error => {
-    //       reject(error)
-    //     })
-    //   })
-    // },
+    // 退出系统
+    LogOut({ commit, state }) {
+      return new Promise((resolve, reject) => {
+        logout(state.token).then(() => {
+          //将 token 设置为 空（其实这一步并不需要， 因为下面进行了 removeToken ，将 token 删除了，二者操作的是同一个 token）
+          commit('SET_TOKEN', '')
+          commit('SET_ROLES', [])
+          commit('SET_PERMISSIONS', [])
+          //删除 token
+          removeToken()
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
 
     // 前端 登出
     FedLogOut({ commit }) {

@@ -15,7 +15,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/login.vue')
   },
   {
-    //'' 空就代表的是 '/'
+    //'' 空就代表的是 '/'  或者 ‘/index’
     path: '',
     name: 'Layout',
     //这是 layout 下面的 index.vue

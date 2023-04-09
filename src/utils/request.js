@@ -1,7 +1,11 @@
 //导入依赖中的包 axios，进行发送请求使用
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import { getToken } from '@/utils/auth'
+import store from '@/store'
+
+// 是否显示重新登录（token过期）
+export let isRelogin = { show: false };
 
 // 创建axios实例,类似 java 中的封装，工具类
 const service = axios.create({
@@ -36,6 +40,27 @@ service.interceptors.response.use(res => {
 
   //前端访问后台的时候，加入没携带 token 的话，那么就会报错 401，需要进行重新 login
   if (code === 401) {
+    if (!isRelogin.show) {
+      //设置成为 true，避免请求出现多个 401 报错，那么每一个都会执行到这里，会出现多个请求重新登录的弹窗
+      //避免重复弹出窗口
+      isRelogin.show = true;
+      //MessageBox和Message不一样，可以显示按钮
+      MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        //点击 重新登录 按钮成功之后，走的这个逻辑
+        isRelogin.show = false;
+        store.dispatch('LogOut').then(() => {
+          //重定向到首页，但是因为已经 logout 了，token 被删除了，那么就会被 security 拦截，进行重新login
+          location.href = '/index';
+        })
+      }).catch(() => {
+        //出现异常，要把这个改为 false ，避免之后的 401 都捕获不到
+        isRelogin.show = false;
+      });
+    }
     return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
   }
   if (code === 500){
