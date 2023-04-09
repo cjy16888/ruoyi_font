@@ -56,10 +56,23 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo() {
+    GetInfo({commit}) {
       return new Promise((resolve, reject) => {
         //访问后端服务器
         getInfo().then(res => {
+          const user = res.user
+          const avatar = (user.avatar == "" || user.avatar == null) ?
+            require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
+          if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是中·一个非空数组
+            //存储用户信息，避免 permission.js 频繁访问 getInfo，类似于前端的缓存
+            commit('SET_ROLES', res.roles)
+            commit('SET_PERMISSIONS', res.permissions)
+          } else {
+            //默认权限
+            commit('SET_ROLES', ['ROLE_DEFAULT'])
+          }
+          commit('SET_NAME', user.userName)
+          commit('SET_AVATAR', avatar)
           resolve(res)
         }).catch(error => {
           reject(error)

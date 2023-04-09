@@ -10,6 +10,7 @@ export function getCondeImg() {
     url: '/captchaImage',
     method: 'get',
     //这个不设置的话，用的就是 request 中，可以覆盖
+    //请求的超时时间
     timeout: 20000,
     headers: {
       isToken: false

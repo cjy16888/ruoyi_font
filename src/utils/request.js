@@ -24,6 +24,9 @@ service.interceptors.request.use(config => {
     config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
   }
   return config
+}, error => {
+  console.log(error)
+  Promise.reject(error)
 })
 
 //响应拦截器（优先级最高,拦截 service 的 axios 实例 发送的所有请求响应），对返回的 res 进行处理，这里只返回 data 给前端的方法
@@ -48,7 +51,21 @@ service.interceptors.response.use(res => {
   }else {
     return res.data
   }
-})
+}, //请求后端的时候，接口api发生异常的的时候，前端进行的处理方式，以及如何进行显示提示用户
+  error => {
+    console.log('err' + error)
+    let { message } = error;
+    if (message == "Network Error") {
+      message = "后端接口连接异常";
+    } else if (message.includes("timeout")) {
+      message = "系统接口请求超时";
+    } else if (message.includes("Request failed with status code")) {
+      message = "系统接口" + message.substr(message.length - 3) + "异常";
+    }
+    Message({ message: message, type: 'error', duration: 5 * 1000 })
+    return Promise.reject(error)
+  }
+)
 
 //将 service 导出去，给其他文件进行使用
 export default service

@@ -15,6 +15,7 @@ router.beforeEach((to, from, next) => {
       next('/')
     } else {
       //如果用户信息为 null，就访问后台获取用户信息，因为找到这里， token 已经有了
+      //避免每一次请求新的路径都要进行请求一次 GetInfo，只需要访问一次一次得到用户信息进行存储起来就可以了
       if (store.getters.roles.length === 0){
         console.log("getInfo", "获取用户信息")
         //访问 user.js 中的 getInfo 方法，对后端进行获取用户的详细的信息
