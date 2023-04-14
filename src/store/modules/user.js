@@ -89,6 +89,7 @@ const user = {
           commit('SET_ROLES', [])
           commit('SET_PERMISSIONS', [])
           //删除 token
+          console.log("删除 token")
           removeToken()
           resolve()
         }).catch(error => {

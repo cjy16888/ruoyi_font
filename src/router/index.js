@@ -1,6 +1,9 @@
 import Vue from 'vue'
+// eslint-disable-next-line no-unused-vars
 import VueRouter from 'vue-router'
-import layout from '@/layout'
+/* Layout */
+// eslint-disable-next-line no-unused-vars
+import Layout from '@/layout'
 
 Vue.use(VueRouter)
 
@@ -19,12 +22,14 @@ const routes = [
     path: '',
     name: 'Layout',
     //这是 layout 下面的 index.vue
-    component: layout
+    component: Layout
   }
 ]
 
 const router = new VueRouter({
-  routes
+  routes: routes,
+  mode: 'history', // 去掉url中的#
 })
 
 export default router
+
