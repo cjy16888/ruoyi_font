@@ -1,17 +1,25 @@
 <template>
   <div v-if="!item.hidden">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+      <!--点击菜单目录的路由地址，以及跳转到对应的地址-->
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
+        <!--index 取值是为了避免每一个目录都是一样的，因为点击展开的时候，index 一样的话，会全部进行展开-->
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
           <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
         </el-menu-item>
       </app-link>
     </template>
 
+    <!--index 取值是为了避免每一个目录都是一样的，因为点击展开的时候，index 一样的话，会全部进行展开-->
+    <!--index 不一样的话，只会展开我们点击的 index 那个的菜单-->
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
+        <!--展示的是 父级目录-->
+        <!--通过 item.vue （item标签） 进行数据的 vo 展示的修改-->
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
+      <!--进行递归遍历子目录-->
+      <!--resolvePath  路径拼接-->
       <sidebar-item
         v-for="child in item.children"
         :key="child.path"
@@ -35,9 +43,11 @@ export default {
   name: 'SidebarItem',
   components: { Item, AppLink },
   mixins: [FixiOSBug],
+  //接收 sidebar 下的 index.vue 传递过来的 左侧菜单栏 数据，进行展示
   props: {
     // route object
     item: {
+      //左侧的每一个目录都是一个对象 VO
       type: Object,
       required: true
     },
@@ -82,7 +92,9 @@ export default {
 
       return false
     },
+    //进行跳转的路径的拼接
     resolvePath(routePath, routeQuery) {
+      //isExternal，校验路径是否正确
       if (isExternal(routePath)) {
         return routePath
       }
@@ -98,3 +110,4 @@ export default {
   }
 }
 </script>
+

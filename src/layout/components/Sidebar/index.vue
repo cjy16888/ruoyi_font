@@ -1,48 +1,30 @@
 <template>
-    <div>
-        <logo/>
-        <el-scrollbar>
-          <el-menu
-            default-active="2"
-            class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
-            background-color="#545c64"
-            text-color="#fff"
-            active-text-color="#ffd04b">
-            <el-submenu index="1">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>导航一</span>
-              </template>
-              <el-menu-item-group>
-                <template slot="title">分组一</template>
-                <el-menu-item index="1-1">选项1</el-menu-item>
-                <el-menu-item index="1-2">选项2</el-menu-item>
-              </el-menu-item-group>
-              <el-menu-item-group title="分组2">
-                <el-menu-item index="1-3">选项3</el-menu-item>
-              </el-menu-item-group>
-              <el-submenu index="1-4">
-                <template slot="title">选项4</template>
-                <el-menu-item index="1-4-1">选项1</el-menu-item>
-              </el-submenu>
-            </el-submenu>
-            <el-menu-item index="2">
-              <i class="el-icon-menu"></i>
-              <span slot="title">导航二</span>
-            </el-menu-item>
-            <el-menu-item index="3" disabled>
-              <i class="el-icon-document"></i>
-              <span slot="title">导航三</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-              <i class="el-icon-setting"></i>
-              <span slot="title">导航四</span>
-            </el-menu-item>
-          </el-menu>
-        </el-scrollbar>
-    </div>
+  <div :class="{'has-logo':showLogo}" :style="{ backgroundColor: settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground }">
+    <logo v-if="showLogo" :collapse="isCollapse" />
+    <el-scrollbar :class="settings.sideTheme" wrap-class="scrollbar-wrapper">
+      <el-menu
+        :default-active="activeMenu"
+        :collapse="isCollapse"
+        :background-color="settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
+        :text-color="settings.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
+        :unique-opened="true"
+        :active-text-color="settings.theme"
+        :collapse-transition="false"
+        mode="vertical"
+      >
+        <!--遍历 SideBarItem 中 的获取的菜单目录，进行展示-->
+        <!--遍历 sidebarRouters ，因为获取的 json 数据，有多个组合，类似集合list， route 相当于获取list集合的元素对象-->
+        <!--这里的意思是：将下面的接受到的数据进行遍历，然后因为使用的是 sidebar-item ，所以讲数据传递到 sideBarItem 中-->
+        <!--sideBarItem 通过 props 进行接受对应的参数就行了-->
+        <sidebar-item
+          v-for="(route, index) in sidebarRouters"
+          :key="route.path  + index"
+          :item="route"
+          :base-path="route.path"
+        />
+      </el-menu>
+    </el-scrollbar>
+  </div>
 </template>
 
 <script>
@@ -52,36 +34,27 @@ import SidebarItem from "./SidebarItem";
 import variables from "@/assets/styles/variables.scss";
 
 export default {
-  // eslint-disable-next-line vue/no-unused-components
-    components: { SidebarItem, Logo },
-    computed: {
-        ...mapState(["settings"]),
-        ...mapGetters(["sidebarRouters", "sidebar"]),
-        activeMenu() {
-            const route = this.$route;
-            const { meta, path } = route;
-            // if set path, the sidebar will highlight the path you set
-            if (meta.activeMenu) {
-                return meta.activeMenu;
-            }
-            return path;
-        },
-        showLogo() {
-            return this.$store.state.settings.sidebarLogo;
-        },
-        variables() {
-            return variables;
-        },
-        isCollapse() {
-            return !this.sidebar.opened;
-        }
+  components: { SidebarItem, Logo },
+  computed: {
+    ...mapState(["settings"]),
+    ...mapGetters(["sidebarRouters", "sidebar"]),
+    activeMenu() {
+      const route = this.$route;
+      const { meta, path } = route;
+      // if set path, the sidebar will highlight the path you set
+      if (meta.activeMenu) {
+        return meta.activeMenu;
+      }
+      return path;
     },
-  methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+    showLogo() {
+      return this.$store.state.settings.sidebarLogo;
     },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    variables() {
+      return variables;
+    },
+    isCollapse() {
+      return !this.sidebar.opened;
     }
   }
 };

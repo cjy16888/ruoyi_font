@@ -8,6 +8,11 @@ import 'element-ui/lib/theme-chalk/index.css'
 //需要将 permission.js 手动引进到 main.js 实现全局配置，不然不会进行生效的
 import './permission' // permission control
 
+import './assets/styles/element-variables.scss'
+import '@/assets/styles/index.scss' // global css
+import '@/assets/styles/ruoyi.scss' // ruoyi css
+import '@/assets/icons'
+
 Vue.config.productionTip = false
 Vue.use(Element)
 

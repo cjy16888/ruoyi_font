@@ -35,7 +35,8 @@
     "sass-loader": "^12.0.0",
     "vue-template-compiler": "^2.6.14",
     "element-ui": "2.15.12",
-    "axios": "0.24.0"
+    "axios": "0.24.0",
+    "svg-sprite-loader": "5.1.1"
   },
   "eslintConfig": {
     "root": true,
