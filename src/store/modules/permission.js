@@ -1,4 +1,5 @@
 // import router, { constantRoutes, dynamicRoutes } from '@/router'
+import { constantRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 
 
@@ -40,7 +41,7 @@ const permission = {
           // rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true })
           // router.addRoutes(asyncRoutes);
           // commit('SET_ROUTES', rewriteRoutes)
-          commit('SET_SIDEBAR_ROUTERS', res.data)
+          commit('SET_SIDEBAR_ROUTERS', constantRoutes.concat(res.data))
           // commit('SET_DEFAULT_ROUTES', sidebarRoutes)
           // commit('SET_TOPBAR_ROUTES', sidebarRoutes)
           resolve(res)
