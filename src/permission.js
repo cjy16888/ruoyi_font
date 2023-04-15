@@ -20,8 +20,10 @@ router.beforeEach((to, from, next) => {
         console.log("getInfo", "获取用户信息")
         //访问 user.js 中的 getInfo 方法，对后端进行获取用户的详细的信息
         store.dispatch('GetInfo').then(res => {
-          console.log("getInfo", res)
-          next()
+          store.dispatch('GenerateRoutes').then(accessRoutes => {
+            console.log("getInfo", res + accessRoutes)
+            next()
+          })
         }).catch(err => {
           Message.error(err)
         })

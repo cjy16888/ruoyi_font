@@ -4,7 +4,7 @@
     <el-scrollbar :class="settings.sideTheme" wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
-        :collapse="isCollapse"
+
         :background-color="settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
         :text-color="settings.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
         :unique-opened="true"
@@ -31,13 +31,14 @@
 import { mapGetters, mapState } from "vuex";
 import Logo from "./Logo";
 import SidebarItem from "./SidebarItem";
-import variables from "@/assets/styles/variables.scss";
+import variables from "@/assets/styles/variables.scss"
 
 export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapState(["settings"]),
-    ...mapGetters(["sidebarRouters", "sidebar"]),
+    //使用后端获取的数据，vuex的语法糖
+    ...mapGetters(["sidebarRouters"]),
     activeMenu() {
       const route = this.$route;
       const { meta, path } = route;
@@ -51,11 +52,12 @@ export default {
       return this.$store.state.settings.sidebarLogo;
     },
     variables() {
+
       return variables;
     },
-    isCollapse() {
-      return !this.sidebar.opened;
-    }
+    // isCollapse() {
+    //   return !this.sidebar.opened;
+    // }
   }
 };
 </script>
