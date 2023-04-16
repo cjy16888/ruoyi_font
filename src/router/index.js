@@ -55,7 +55,9 @@ export const constantRoutes = [
         //展示的内容
         meta: {
           title: '首页',
-          icon: 'dashboard'
+          icon: 'dashboard',
+          //true 的话，就是首页不显示 x 关闭符号
+          affix: true
         }
       },
     ]

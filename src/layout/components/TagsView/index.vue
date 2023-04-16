@@ -1,7 +1,8 @@
 <!--需要引入  tagsView.js  文件-->
 <template>
   <div id="tags-view-container" class="tags-view-container">
-    <scroll-pane>
+    <!--scroll 记得加上 样式 class，调了半天的 css-->
+    <scroll-pane ref="scrollPane" class="tags-view-wrapper" @scroll="handleScroll">
       <router-link
         v-for="tag in visitedViews"
         ref="tag"
@@ -16,6 +17,7 @@
       >
         {{tag.title}}
         <!--这个是 x 符号，点击 x 关闭-->
+        <!--stop，如果不加的话，点击 x 不是关闭，而是进行跳转，因为当前的标签被 route-link 标签包裹了-->
         <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
     </scroll-pane>
@@ -27,7 +29,6 @@ import ScrollPane from './ScrollPane'
 import path from 'path'
 
 export default {
-  // eslint-disable-next-line vue/no-unused-components
   components: { ScrollPane },
   data() {
     return {
@@ -82,6 +83,8 @@ export default {
         "border-color": this.theme
       };
     },
+    //是否显示 x 关闭符号
+    //首页不显示 x 关闭符号
     isAffix(tag) {
       return tag.meta && tag.meta.affix
     },
@@ -161,8 +164,11 @@ export default {
         this.$store.dispatch('tagsView/delIframeView', this.$route)
       }
     },
+    //点击 x 关闭 tagsView 标签
     closeSelectedTag(view) {
+      //关闭选中的标签
       this.$tab.closePage(view).then(({ visitedViews }) => {
+        //成功关闭标签之后，进行跳转到 最后一个标签对应的 路由的页面（首页是第一个标签）
         if (this.isActive(view)) {
           this.toLastView(visitedViews, view)
         }
@@ -196,6 +202,7 @@ export default {
         this.toLastView(visitedViews, view)
       })
     },
+    //跳转到 最后一个标签的页面
     toLastView(visitedViews, view) {
       const latestView = visitedViews.slice(-1)[0]
       if (latestView) {
@@ -318,6 +325,7 @@ export default {
       width: 16px;
       height: 16px;
       vertical-align: 2px;
+      //点击 x 符号的时候，显示的圆角的包裹
       border-radius: 50%;
       text-align: center;
       transition: all .3s cubic-bezier(.645, .045, .355, 1);

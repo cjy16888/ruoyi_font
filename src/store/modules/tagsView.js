@@ -30,6 +30,7 @@ const mutations = {
       state.cachedViews.push(view.name)
     }
   },
+  //x ¹Ø±Õ tagsView ±êÇ©
   DEL_VISITED_VIEW: (state, view) => {
     for (const [i, v] of state.visitedViews.entries()) {
       if (v.path === view.path) {
