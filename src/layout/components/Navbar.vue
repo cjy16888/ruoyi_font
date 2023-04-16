@@ -1,7 +1,15 @@
 <template>
   <div class="navbar">
-      <hamburger/>
-      <breadcrumb/>
+    <hamburger
+      class="hamburger-container"
+      @toggleClick="toggleSideBar" >
+    </hamburger>
+    <breadcrumb>
+
+    </breadcrumb>
+    <div class="right-menu">
+      right-menu
+    </div>
   </div>
 </template>
 

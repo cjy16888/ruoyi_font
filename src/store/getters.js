@@ -4,6 +4,7 @@ const getters = {
   //不然的获取不到值，但是不会报错
   roles: state => state.User.roles,
   sidebarRouters:state => state.permission.sidebarRouters,
+  sidebar: state => state.app.sidebar,
 }
 
 

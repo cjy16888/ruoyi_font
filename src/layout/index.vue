@@ -1,6 +1,6 @@
 <template>
-  <div class="app-wrapper">
-    <div class="drawer-bg"/>
+  <div class="app-wrapper" :class="classObj">
+    <div/>
     <sidebar class="sidebar-container"/>
     <div class="main-container">
       <div>
@@ -44,6 +44,8 @@ export default {
     }),
     classObj() {
       return {
+        //菜单隐藏换 css 样式，不然的话，隐藏的样式出错，因为我们写的是 固定的 200px width
+        //不换 css 的话，折叠了只是隐藏了文字，但是 宽度没有变化
         hideSidebar: !this.sidebar.opened,
         openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,

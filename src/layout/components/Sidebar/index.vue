@@ -1,10 +1,11 @@
 <template>
   <div :class="{'has-logo':showLogo}" :style="{ backgroundColor: settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground }">
+    <!--logo 的文字，如果折叠了不进行展示了-->
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar :class="settings.sideTheme" wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
-
+        :collapse="isCollapse"
         :background-color="settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
         :text-color="settings.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
         :unique-opened="true"
@@ -38,7 +39,7 @@ export default {
   computed: {
     ...mapState(["settings"]),
     //使用后端获取的数据，vuex的语法糖
-    ...mapGetters(["sidebarRouters"]),
+    ...mapGetters(["sidebarRouters", "sidebar"]),
     activeMenu() {
       const route = this.$route;
       const { meta, path } = route;
@@ -55,9 +56,11 @@ export default {
 
       return variables;
     },
-    // isCollapse() {
-    //   return !this.sidebar.opened;
-    // }
+    //左侧菜单栏   收缩展开
+    isCollapse() {
+      //false 不折叠， true 折叠
+      return !this.sidebar.opened;
+    }
   }
 };
 </script>
