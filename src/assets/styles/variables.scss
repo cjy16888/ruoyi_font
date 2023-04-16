@@ -10,7 +10,9 @@ $panGreen: #30B08F;
 
 // 默认菜单主题风格
 $base-menu-color:#bfcbd9;
-$base-menu-color-active:#f4f4f5;
+//点击父目录之后的颜色
+$base-menu-color-active:#C03639;
+//菜单栏的下半身的颜色
 $base-menu-background:#304156;
 $base-logo-title-color: #ffffff;
 
@@ -18,8 +20,10 @@ $base-menu-light-color:rgba(0,0,0,.70);
 $base-menu-light-background:#ffffff;
 $base-logo-light-title-color: #001529;
 
-$base-sub-menu-background:#1f2d3d;
-$base-sub-menu-hover:#001528;
+//子菜单目录展开的颜色
+$base-sub-menu-background:#324157;
+//鼠标悬浮子目录的颜色
+$base-sub-menu-hover:#30B08F;
 
 // 自定义暗色菜单风格
 /**

@@ -1,6 +1,9 @@
 <template>
   <div>
-
+    <!--就是显示当前的 页面 下面的 children 的 route 路由页面-->
+    <!--一个页面展示多个请求的页面-->
+    <!-- router/index.js 指向 views/index.vue -->
+    <router-view/>
   </div>
 </template>
 

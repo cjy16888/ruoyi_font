@@ -1,10 +1,13 @@
 <template>
   <div v-if="!item.hidden">
+    <!--这里的是  ‘首页’  的设置，只有一个 children 的时候，进行展示-->
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <!--点击菜单目录的路由地址，以及跳转到对应的地址-->
+      <!--这个 resolvePath 为了页面返回的时候，能正常进行回到之前的路由，并且展示数据-->
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
         <!--index 取值是为了避免每一个目录都是一样的，因为点击展开的时候，index 一样的话，会全部进行展开-->
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
+        <!--展示 菜单栏目录的 menu-item-->
+        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}" >
           <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
         </el-menu-item>
       </app-link>
@@ -49,7 +52,7 @@ export default {
     item: {
       //左侧的每一个目录都是一个对象 VO
       type: Object,
-      required: true
+      required: true,
     },
     isNest: {
       type: Boolean,
@@ -65,6 +68,8 @@ export default {
     return {}
   },
   methods: {
+    //如果直接是  父目录，没有child的话，直接展示当前的 目录的路由的内容
+    //如果还有child的话，就展开目录，并且进行 hidden，不会页面展示的内容不会发生更改
     hasOneShowingChild(children = [], parent) {
       if (!children) {
         children = [];

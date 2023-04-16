@@ -2,6 +2,7 @@ import router from '@/router'
 import { getToken } from '@/utils/auth'
 import store from './store'
 import { Message } from 'element-ui'
+import { isRelogin } from '@/utils/request'
 
 //自定义白名单
 const whiteList =['/login']
@@ -17,12 +18,22 @@ router.beforeEach((to, from, next) => {
       //如果用户信息为 null，就访问后台获取用户信息，因为找到这里， token 已经有了
       //避免每一次请求新的路径都要进行请求一次 GetInfo，只需要访问一次一次得到用户信息进行存储起来就可以了
       if (store.getters.roles.length === 0){
+        isRelogin.show = true
         console.log("getInfo", "获取用户信息")
         //访问 user.js 中的 getInfo 方法，对后端进行获取用户的详细的信息
-        store.dispatch('GetInfo').then(res => {
+        store.dispatch('GetInfo').then(() => {
+          isRelogin.show = false
           //访问后端的接口，getRoutes，获取 菜单栏数据
           store.dispatch('GenerateRoutes').then(accessRoutes => {
-            console.log("getInfo", res + accessRoutes)
+            console.log("getInfo 路由", accessRoutes)
+            //为了直接在 当前页面请求，相当于 children 页面，sidebar 那些不动
+            //更换 app-main 的页面的内容
+            // 根据roles权限生成可访问的路由表
+            //异步请求，add成功之后，马上进行访问
+            // router.addRoutes(accessRoutes)
+            accessRoutes.forEach(res=>{ // 动态添加可访问路由表
+              router.addRoute(res);
+            })
             next()
           })
         }).catch(err => {

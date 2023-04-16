@@ -84,6 +84,7 @@
     .submenu-title-noDropdown,
     .el-submenu__title {
       &:hover {
+        //鼠标悬浮  父目录  的颜色
         background-color: rgba(0, 0, 0, 0.06) !important;
       }
     }

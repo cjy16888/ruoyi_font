@@ -1,16 +1,19 @@
 <template>
-  <div>
-    navbar
+  <div class="navbar">
+      <hamburger/>
+      <breadcrumb/>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
+import Hamburger from '@/components/Hamburger'
+import breadcrumb from '@/components/Breadcrumb'
 
 export default {
   components: {
-
+    Hamburger,
+    breadcrumb
   },
   computed: {
     ...mapGetters([
