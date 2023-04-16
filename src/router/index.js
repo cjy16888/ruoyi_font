@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 /* Layout */
 // eslint-disable-next-line no-unused-vars
 import Layout from '@/layout'
+import Router from 'vue-router'
 
 Vue.use(VueRouter)
 
@@ -39,6 +40,8 @@ export const constantRoutes = [
     hidden: false,
     //这是 layout 下面的 index.vue
     component: Layout,
+    //访问界面的时候，直接跳转到 index，而不是上面的 ‘’
+    redirect: '/index',
     //在 Layout 的界面下，单独的刷新 /index 请求，到 app-main 中
     children: [
       {
@@ -81,7 +84,11 @@ export const dynamicRoutes = [
 
 ]
 
-
+// 防止连续点击多次路由报错
+let routerPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(err => err)
+}
 
 const router = new VueRouter({
   routes: constantRoutes,

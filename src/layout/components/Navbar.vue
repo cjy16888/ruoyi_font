@@ -108,6 +108,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('LogOut').then(() => {
+          //会被拦截，跳转到 login
           location.href = '/index';
         })
       }).catch(() => {});
