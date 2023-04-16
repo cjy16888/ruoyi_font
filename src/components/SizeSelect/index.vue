@@ -1,8 +1,12 @@
 <template>
+  <!--下拉框-->
+  <!--触发方式  点击-->
   <el-dropdown trigger="click" @command="handleSetSize">
     <div>
+      <!--展示的 布局大小 的图标-->
       <svg-icon class-name="size-icon" icon-class="size" />
     </div>
+    <!--点击之后，进行展示的 下拉框，选择  布局的大小-->
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="size===item.value" :command="item.value">
         {{ item.label }}
@@ -29,6 +33,8 @@ export default {
     }
   },
   methods: {
+    //这里是，点击的下拉框中的某一个   布局大小
+    //然后根据  选择的大小进行设置对应的参数
     handleSetSize(size) {
       this.$ELEMENT.size = size
       this.$store.dispatch('app/setSize', size)

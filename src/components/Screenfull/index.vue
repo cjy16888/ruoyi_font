@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!--展示图标，以及点击进行全屏展示页面-->
     <svg-icon :icon-class="isFullscreen?'exit-fullscreen':'fullscreen'" @click="click" />
   </div>
 </template>
@@ -21,11 +22,13 @@ export default {
     this.destroy()
   },
   methods: {
+    //浏览器进行全屏展示
     click() {
       if (!screenfull.isEnabled) {
         this.$message({ message: '你的浏览器不支持全屏', type: 'warning' })
         return false
       }
+      //全屏
       screenfull.toggle()
     },
     change() {

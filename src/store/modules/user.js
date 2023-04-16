@@ -61,8 +61,8 @@ const user = {
         //访问后端服务器
         getInfo().then(res => {
           const user = res.user
-          const avatar = (user.avatar == "" || user.avatar == null) ?
-            require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
+          const avatar = (user.avatar === '' || user.avatar === null) ?
+            require('@/assets/images/profile.jpg') : process.env.VUE_APP_BASE_API + user.avatar;
           if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是中·一个非空数组
             //存储用户信息，避免 permission.js 频繁访问 getInfo，类似于前端的缓存
             commit('SET_ROLES', res.roles)
