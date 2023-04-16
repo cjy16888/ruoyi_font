@@ -1,5 +1,25 @@
+<!--需要引入  tagsView.js  文件-->
 <template>
-  <div>tagsview</div>
+  <div id="tags-view-container" class="tags-view-container">
+    <scroll-pane>
+      <router-link
+        v-for="tag in visitedViews"
+        ref="tag"
+        :key="tag.path"
+        :class="isActive(tag)?'active':''"
+        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
+        tag="span"
+        class="tags-view-item"
+        :style="activeStyle(tag)"
+        @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
+        @contextmenu.prevent.native="openMenu(tag,$event)"
+      >
+        {{tag.title}}
+        <!--这个是 x 符号，点击 x 关闭-->
+        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+      </router-link>
+    </scroll-pane>
+  </div>
 </template>
 
 <script>
@@ -29,8 +49,10 @@ export default {
       return this.$store.state.settings.theme;
     }
   },
+  //监听路由的变换
   watch: {
     $route() {
+      //添加 tagsView
       this.addTags()
       this.moveToCurrentTag()
     },
@@ -50,9 +72,12 @@ export default {
     isActive(route) {
       return route.path === this.$route.path
     },
+    //tagsView 的背景颜色
+    //当前打开的标签的话，显示的是 蓝色
     activeStyle(tag) {
       if (!this.isActive(tag)) return {};
       return {
+        //默认的颜色
         "background-color": this.theme,
         "border-color": this.theme
       };
@@ -105,6 +130,7 @@ export default {
       }
     },
     addTags() {
+      //拿到路由的名字，显示到 tagsView 中
       const { name } = this.$route
       if (name) {
         this.$store.dispatch('tagsView/addView', this.$route)
@@ -239,16 +265,20 @@ export default {
       &:last-of-type {
         margin-right: 15px;
       }
+      //选中的 tagsView 的状态
       &.active {
+        //选中的  tagsView 的颜色
         background-color: #42b983;
         color: #fff;
         border-color: #42b983;
         &::before {
           content: '';
+          //圆角的背景颜色
           background: #fff;
           display: inline-block;
           width: 8px;
           height: 8px;
+          //圆角
           border-radius: 50%;
           position: relative;
           margin-right: 2px;

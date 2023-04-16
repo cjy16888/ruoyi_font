@@ -39,6 +39,7 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
+          <!--router-link 标签添加之后，个人中心不显示，可能是因为  有 js 文件没有引入-->
           <!--<router-link to="/user/profile">-->
             <el-dropdown-item>个人中心</el-dropdown-item>
           <!--</router-link>-->

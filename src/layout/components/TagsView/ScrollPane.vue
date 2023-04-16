@@ -1,4 +1,5 @@
 <template>
+  <!--滚动条，:vertical="false" 说明滚动条是水平的-->
   <el-scrollbar ref="scrollContainer" :vertical="false" class="scroll-container" @wheel.native.prevent="handleScroll">
     <slot />
   </el-scrollbar>
