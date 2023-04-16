@@ -74,7 +74,10 @@
       width: 100% !important;
     }
 
+    //菜单栏的目录显示的背景，有文字部分的背景颜色
     .el-menu-item, .el-submenu__title {
+      background-color: #304156;
+      color: #BFCBD9;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       white-space: nowrap !important;
@@ -85,7 +88,8 @@
     .el-submenu__title {
       &:hover {
         //鼠标悬浮  父目录  的颜色
-        background-color: rgba(0, 0, 0, 0.06) !important;
+        //background-color: rgba(0, 0, 0, 0.06) !important;
+        background-color: lightslategrey;
       }
     }
 
@@ -104,8 +108,10 @@
 
     & .theme-dark .nest-menu .el-submenu>.el-submenu__title,
     & .theme-dark .el-submenu .el-menu-item {
+      //子菜单展开的颜色
       background-color: $base-sub-menu-background !important;
 
+      //鼠标悬浮子目录的颜色
       &:hover {
         background-color: $base-sub-menu-hover !important;
       }
