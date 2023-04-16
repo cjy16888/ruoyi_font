@@ -1,8 +1,10 @@
 <template>
+  <!--以 / 分隔面包屑-->
   <el-breadcrumb class="app-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
         <span v-if="item.redirect === 'noRedirect' || index == levelList.length - 1" class="no-redirect">{{ item.meta.title }}</span>
+        <!--可以点击的面包屑-->
         <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>
@@ -16,7 +18,9 @@ export default {
       levelList: null
     }
   },
+  //监听路由 route
   watch: {
+    //route 发生变化，就执行下面的逻辑
     $route(route) {
       // if you go to the redirect page, do not update the breadcrumbs
       if (route.path.startsWith('/redirect/')) {
@@ -31,9 +35,11 @@ export default {
   methods: {
     getBreadcrumb() {
       // only show routes with meta.title
+      // item， route 进行拦截，获得的 getRoutes 的数据
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
 
+      //判断不是首页的情况下，面包屑的前面（第一个）设置为 首页
       if (!this.isDashboard(first)) {
         matched = [{ path: '/index', meta: { title: '首页' }}].concat(matched)
       }
