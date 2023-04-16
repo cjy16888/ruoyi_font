@@ -64,6 +64,8 @@ export default {
   & .sidebar-logo-link {
     height: 100%;
     width: 100%;
+    //sidebar 的 logo 块的背景颜色
+    background-color: #304156;
 
     & .sidebar-logo {
       width: 32px;
