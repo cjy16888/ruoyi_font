@@ -14,9 +14,14 @@ import '@/assets/styles/ruoyi.scss' // ruoyi css
 import '@/assets/icons'
 import rightToolbar from '@/components/RightToolbar'
 
+import { addDateRange } from '@/utils/ruoyi'
+
 Vue.config.productionTip = false
 Vue.use(Element)
 Vue.component('RightToolbar',rightToolbar)
+
+// 全局方法挂载
+Vue.prototype.addDateRange = addDateRange
 
 new Vue({
   router,

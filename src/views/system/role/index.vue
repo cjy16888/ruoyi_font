@@ -92,26 +92,30 @@
       <right-toolbar :showSearch.sync="showSearch" ></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="roleList" >
+    <!--显示的  role 角色列表-->
+    <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <!--prop 属性，双向绑定-->
       <el-table-column label="角色编号" prop="roleId" width="120" />
       <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
       <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
       <el-table-column label="显示顺序" prop="roleSort" width="100" />
+      <!--居中  -->
       <el-table-column label="状态" align="center" width="100">
         <template slot-scope="scope">
+          <!--按钮，0 1-->
           <el-switch
             v-model="scope.row.status"
             active-value="0"
             inactive-value="1"
-
+            @change="handleStatusChange(scope.row)"
           ></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
+        <!--<template slot-scope="scope">-->
+        <!--  <span>{{ parseTime(scope.row.createTime) }}</span>-->
+        <!--</template>-->
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope" v-if="scope.row.roleId !== 1">
@@ -131,6 +135,7 @@
           >删除</el-button>
           <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" v-hasPermi="['system:role:edit']">
             <el-button size="mini" type="text" icon="el-icon-d-arrow-right">更多</el-button>
+            <!--小窗口，显示下拉的菜单-->
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="handleDataScope" icon="el-icon-circle-check"
                                 v-hasPermi="['system:role:edit']">数据权限</el-dropdown-item>
@@ -143,13 +148,13 @@
     </el-table>
 
 
-
-
   </div>
 </template>
 
 <script>
 
+
+import { listRole } from '@/api/system/role'
 
 export default {
   name: "Role",
@@ -249,5 +254,21 @@ export default {
       }
     };
   },
+  created() {
+    this.getList();
+  },
+  methods: {
+    /** 查询角色列表 */
+    getList () {
+      this.loading = true;
+      listRole().then(response => {
+        console.log("role列表", response)
+          this.roleList = response.rows;
+          // this.total = response.total;
+          this.loading = false;
+        }
+      );
+    },
+  }
 }
 </script>
