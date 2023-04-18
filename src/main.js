@@ -12,9 +12,11 @@ import './assets/styles/element-variables.scss'
 import '@/assets/styles/index.scss' // global css
 import '@/assets/styles/ruoyi.scss' // ruoyi css
 import '@/assets/icons'
+import rightToolbar from '@/components/RightToolbar'
 
 Vue.config.productionTip = false
 Vue.use(Element)
+Vue.component('RightToolbar',rightToolbar)
 
 new Vue({
   router,

@@ -1,13 +1,253 @@
 <template>
-  <div>role</div>
+  <div class="app-container">
+    <!--:inline="true"  一行进行展示-->
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true">
+      <!--输入的表单的数据，每一个都是单独的一份，对应不同的功能，所以数据的分开-->
+      <el-form-item label="角色名称" prop="roleName">
+        <el-input
+          v-model="queryParams.roleName"
+          placeholder="请输入角色名称"
+          clearable
+          style="width: 240px"
+
+        />
+      </el-form-item>
+      <el-form-item label="权限字符" prop="roleKey">
+        <el-input
+          v-model="queryParams.roleKey"
+          placeholder="请输入权限字符"
+          clearable
+          style="width: 240px"
+
+        />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <!--选择框-->
+        <el-select
+          v-model="queryParams.status"
+          placeholder="角色状态"
+          clearable
+          style="width: 240px"
+        >
+
+        </el-select>
+      </el-form-item>
+      <el-form-item label="创建时间">
+        <!--日期表-->
+        <el-date-picker
+          v-model="dateRange"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" size="mini" >搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" >重置</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          v-hasPermi="['system:role:add']"
+        >新增</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          v-hasPermi="['system:role:edit']"
+        >修改</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          v-hasPermi="['system:role:remove']"
+        >删除</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="warning"
+          plain
+          icon="el-icon-download"
+          size="mini"
+          v-hasPermi="['system:role:export']"
+        >导出</el-button>
+      </el-col>
+      <right-toolbar :showSearch.sync="showSearch" ></right-toolbar>
+    </el-row>
+
+    <el-table v-loading="loading" :data="roleList" >
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="角色编号" prop="roleId" width="120" />
+      <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
+      <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
+      <el-table-column label="显示顺序" prop="roleSort" width="100" />
+      <el-table-column label="状态" align="center" width="100">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.status"
+            active-value="0"
+            inactive-value="1"
+
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createTime) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope" v-if="scope.row.roleId !== 1">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['system:role:edit']"
+          >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['system:role:remove']"
+          >删除</el-button>
+          <el-dropdown size="mini" @command="(command) => handleCommand(command, scope.row)" v-hasPermi="['system:role:edit']">
+            <el-button size="mini" type="text" icon="el-icon-d-arrow-right">更多</el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="handleDataScope" icon="el-icon-circle-check"
+                                v-hasPermi="['system:role:edit']">数据权限</el-dropdown-item>
+              <el-dropdown-item command="handleAuthUser" icon="el-icon-user"
+                                v-hasPermi="['system:role:edit']">分配用户</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
+      </el-table-column>
+    </el-table>
+
+
+
+
+  </div>
 </template>
 
 <script>
+
+
 export default {
-  name: 'index.vue'
+  name: "Role",
+  dicts: ['sys_normal_disable'],
+  data () {
+    return {
+      // 遮罩层
+      loading: true,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 显示搜索条件
+      showSearch: true,
+      // 总条数
+      total: 0,
+      // 角色表格数据
+      roleList: [],
+      // 弹出层标题
+      title: "",
+      // 是否显示弹出层
+      open: false,
+      // 是否显示弹出层（数据权限）
+      openDataScope: false,
+      menuExpand: false,
+      menuNodeAll: false,
+      deptExpand: true,
+      deptNodeAll: false,
+      // 日期范围
+      dateRange: [],
+      // 数据范围选项
+      dataScopeOptions: [
+        {
+          value: "1",
+          label: "全部数据权限"
+        },
+        {
+          value: "2",
+          label: "自定数据权限"
+        },
+        {
+          value: "3",
+          label: "本部门数据权限"
+        },
+        {
+          value: "4",
+          label: "本部门及以下数据权限"
+        },
+        {
+          value: "5",
+          label: "仅本人数据权限"
+        }
+      ],
+      // 菜单列表
+      menuOptions: [],
+      // 部门列表
+      deptOptions: [],
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        roleName: undefined,
+        roleKey: undefined,
+        status: undefined
+      },
+      // 表单参数
+      form: {},
+      defaultProps: {
+        children: "children",
+        label: "label"
+      },
+      // 表单校验
+      rules: {
+        roleName: [
+          {
+            required: true,
+            message: "角色名称不能为空",
+            trigger: "blur"
+          }
+        ],
+        roleKey: [
+          {
+            required: true,
+            message: "权限字符不能为空",
+            trigger: "blur"
+          }
+        ],
+        roleSort: [
+          {
+            required: true,
+            message: "角色顺序不能为空",
+            trigger: "blur"
+          }
+        ]
+      }
+    };
+  },
 }
 </script>
-
-<style scoped>
-
-</style>
