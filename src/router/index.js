@@ -60,6 +60,30 @@ export const constantRoutes = [
           affix: true
         }
       },
+      {
+        //显示 左菜单栏的 ‘首页’  title
+        path: '/system/user',
+        name: 'User',
+        //不隐藏的话，就会和 首页 是同一个 child 目录，然而父类没有定义，那么就是 空白，层级结构会错乱
+        hidden: true,
+        component: () => import('@/views/system/user/index'),
+      },
+      {
+        //显示 左菜单栏的 ‘首页’  title
+        path: '/system/menu',
+        name: 'Menu',
+        //不隐藏的话，就会和 首页 是同一个 child 目录，然而父类没有定义，那么就是 空白，层级结构会错乱
+        hidden: true,
+        component: () => import('@/views/system/menu/index'),
+      },
+      {
+        //显示 左菜单栏的 ‘首页’  title
+        path: '/system/role',
+        name: 'Role',
+        //不隐藏的话，就会和 首页 是同一个 child 目录，然而父类没有定义，那么就是 空白，层级结构会错乱
+        hidden: true,
+        component: () => import('@/views/system/role/index'),
+      },
     ]
   },
   //这样单独写的话，点击首页会跳转到新的页面，我们需要在 app-main 中更换界面就行了，sidebar这些不需要进行更新

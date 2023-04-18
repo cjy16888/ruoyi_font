@@ -1,9 +1,10 @@
-// import router, { constantRoutes, dynamicRoutes } from '@/router'
-import { constantRoutes } from '@/router'
+// eslint-disable-next-line no-unused-vars
+import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 import Layout from '@/layout'
 import ParentView from '@/components/ParentView'
 import InnerLink from '@/layout/components/InnerLink'
+import auth from '@/plugins/auth'
 
 
 const permission = {
@@ -15,13 +16,13 @@ const permission = {
     sidebarRouters: []   //封装路由到这里面，然后传递到 Sidebar index.vue
   },
   mutations: {
-    // SET_ROUTES: (state, routes) => {
-    //   state.addRoutes = routes
-    //   state.routes = constantRoutes.concat(routes)
-    // },
-    // SET_DEFAULT_ROUTES: (state, routes) => {
-    //   state.defaultRoutes = constantRoutes.concat(routes)
-    // },
+    SET_ROUTES: (state, routes) => {
+      state.addRoutes = routes
+      state.routes = constantRoutes.concat(routes)
+    },
+    SET_DEFAULT_ROUTES: (state, routes) => {
+      state.defaultRoutes = constantRoutes.concat(routes)
+    },
     SET_TOPBAR_ROUTES: (state, routes) => {
       state.topbarRouters = routes
     },
@@ -44,10 +45,10 @@ const permission = {
           // const asyncRoutes = filterDynamicRoutes(dynamicRoutes);
           rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true })
           // router.addRoutes(asyncRoutes);
-          // commit('SET_ROUTES', rewriteRoutes)
+          commit('SET_ROUTES', rewriteRoutes)
           commit('SET_SIDEBAR_ROUTERS', constantRoutes.concat(sidebarRoutes))
-          // commit('SET_DEFAULT_ROUTES', sidebarRoutes)
-          // commit('SET_TOPBAR_ROUTES', sidebarRoutes)
+          commit('SET_DEFAULT_ROUTES', sidebarRoutes)
+          commit('SET_TOPBAR_ROUTES', sidebarRoutes)
           resolve(rewriteRoutes)
         })
       })
@@ -110,15 +111,31 @@ function filterChildren(childrenMap, lastRouter = false) {
   return children
 }
 
+// 动态路由遍历，验证是否具备权限
+export function filterDynamicRoutes(routes) {
+  const res = []
+  routes.forEach(route => {
+    if (route.permissions) {
+      if (auth.hasPermiOr(route.permissions)) {
+        res.push(route)
+      }
+    } else if (route.roles) {
+      if (auth.hasRoleOr(route.roles)) {
+        res.push(route)
+      }
+    }
+  })
+  return res
+}
 
 export const loadView = (view) => {
-  // if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     return (resolve) => require([`@/views/${view}`], resolve)
-  // }
-  // else {
-  //   // 使用 import 实现生产环境的路由懒加载
-  //   return () => import(`@/views/${view}`)
-  // }
+  }
+  else {
+    // 使用 import 实现生产环境的路由懒加载
+    return () => import(`@/views/${view}`)
+  }
 }
 
 export default permission

@@ -31,9 +31,9 @@ router.beforeEach((to, from, next) => {
             // 根据roles权限生成可访问的路由表
             //异步请求，add成功之后，马上进行访问
             // router.addRoutes(accessRoutes)
-            accessRoutes.forEach(res=>{ // 动态添加可访问路由表
-              router.addRoute(res);
-            })
+            // accessRoutes.forEach(res=>{ // 动态添加可访问路由表
+            //   router.addRoute(res);
+            // })
             //会进行多次 beforeEach 死循环，等到获取到了 role ，就会调到下面的 else 语句中，执行 next() 结束
             // next({...to})  //保证动态路由加载完成，不然刷新页面会白屏
             next()
