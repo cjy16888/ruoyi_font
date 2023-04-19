@@ -147,6 +147,14 @@
       </el-table-column>
     </el-table>
 
+    <!--list 集合数量大于 0 进行展示分页组件-->
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
 
   </div>
 </template>
@@ -264,7 +272,7 @@ export default {
       listRole().then(response => {
         console.log("role列表", response)
           this.roleList = response.rows;
-          // this.total = response.total;
+          this.total = response.total;
           this.loading = false;
         }
       );

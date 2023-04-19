@@ -14,6 +14,9 @@ import '@/assets/styles/ruoyi.scss' // ruoyi css
 import '@/assets/icons'
 import rightToolbar from '@/components/RightToolbar'
 
+// 分页组件
+import Pagination from "@/components/Pagination";
+
 import { addDateRange } from '@/utils/ruoyi'
 
 Vue.config.productionTip = false
@@ -22,6 +25,7 @@ Vue.component('RightToolbar',rightToolbar)
 
 // 全局方法挂载
 Vue.prototype.addDateRange = addDateRange
+Vue.component('Pagination', Pagination)
 
 new Vue({
   router,
