@@ -90,6 +90,7 @@ export default {
       if (this.currentPage * val > this.total) {
         this.currentPage = 1
       }
+      //到对应的 list 集合的界面，触发  getList 方法，向后端重新获取 新的一页 的数据
       this.$emit('pagination', { page: this.currentPage, limit: val })
       if (this.autoScroll) {
         scrollTo(0, 800)

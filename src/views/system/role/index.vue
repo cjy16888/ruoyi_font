@@ -147,6 +147,7 @@
       </el-table-column>
     </el-table>
 
+    <!--展示  分页的组件-->
     <!--list 集合数量大于 0 进行展示分页组件-->
     <pagination
       v-show="total>0"

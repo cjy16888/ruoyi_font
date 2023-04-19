@@ -1,3 +1,4 @@
+//分页组件的，点击下一页，反正就是  换页 的作用
 Math.easeInOutQuad = function(t, b, c, d) {
   t /= d / 2
   if (t < 1) {
