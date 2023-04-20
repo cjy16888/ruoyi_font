@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <!--:inline="true"  一行进行展示-->
+    <!--model，prop 必须加，不然的话，搜索和重置是用不了-->
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true">
       <!--输入的表单的数据，每一个都是单独的一份，对应不同的功能，所以数据的分开-->
       <el-form-item label="角色名称" prop="roleName">
@@ -9,7 +10,7 @@
           placeholder="请输入角色名称"
           clearable
           style="width: 240px"
-
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="权限字符" prop="roleKey">
@@ -18,7 +19,7 @@
           placeholder="请输入权限字符"
           clearable
           style="width: 240px"
-
+          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
@@ -29,7 +30,12 @@
           clearable
           style="width: 240px"
         >
-
+          <!--<el-option-->
+          <!--  v-for="dict in dict.type.sys_normal_disable"-->
+          <!--  :key="dict.value"-->
+          <!--  :label="dict.label"-->
+          <!--  :value="dict.value"-->
+          <!--/>-->
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
@@ -45,8 +51,8 @@
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" >搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" >重置</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -270,14 +276,28 @@ export default {
     /** 查询角色列表 */
     getList () {
       this.loading = true;
-      listRole().then(response => {
-        console.log("role列表", response)
+      //queryParams 就是搜索的时候，夹带的参数，进行条件搜索
+      listRole(this.queryParams).then(response => {
           this.roleList = response.rows;
           this.total = response.total;
           this.loading = false;
         }
       );
     },
-  }
+    /** 搜索按钮操作 */
+    handleQuery() {
+      //搜索出来的东西，跳到第一页进行展示
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.dateRange = [];
+      //重置对应的  表单数据  ref
+      this.resetForm("queryForm");
+      //重置之后，重新搜索
+      this.handleQuery();
+    },
+  },
 }
 </script>
