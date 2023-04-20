@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import { getToken } from '@/utils/auth'
 import store from '@/store'
+import { tansParams } from '@/utils/ruoyi'
 
 // 是否显示重新登录（token过期）
 export let isRelogin = { show: false };
@@ -26,6 +27,15 @@ service.interceptors.request.use(config => {
   if (getToken() && !isToken) {
     //注意这个 ‘Bearer ’  r后面有一个空格，不能少
     config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+  }
+  // get请求映射params参数
+  // 如果是一个 get 请求，并且携带有 params 参数，那么进行 url 重新拼接
+  if (config.method === 'get' && config.params) {
+    //url 重新组装
+    let url = config.url + '?' + tansParams(config.params);
+    url = url.slice(0, -1);
+    config.params = {};
+    config.url = url;
   }
   return config
 }, error => {

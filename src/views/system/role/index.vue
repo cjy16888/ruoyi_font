@@ -277,7 +277,7 @@ export default {
     getList () {
       this.loading = true;
       //queryParams 就是搜索的时候，夹带的参数，进行条件搜索
-      listRole(this.queryParams).then(response => {
+      listRole(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
           this.roleList = response.rows;
           this.total = response.total;
           this.loading = false;
