@@ -228,7 +228,7 @@
 <script>
 
 
-import { listRole } from '@/api/system/role'
+import { addRole, listRole, updateRole } from '@/api/system/role'
 import { treeselect as menuTreeselect } from '@/api/system/menu'
 
 export default {
@@ -379,32 +379,35 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-      //refs 就是表单校验成功之后，进行下面的操作
-      // this.$refs["form"].validate(valid => {
-      //   if (valid) {
-      //     if (this.form.roleId != undefined) {
-      //       this.form.menuIds = this.getMenuAllCheckedKeys();
-      //       updateRole(this.form).then(response => {
-      //         this.$modal.msgSuccess("修改成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     } else {
-      //       this.form.menuIds = this.getMenuAllCheckedKeys();
-      //       addRole(this.form).then(response => {
-      //         this.$modal.msgSuccess("新增成功");
-      //         this.open = false;
-      //         this.getList();
-      //       });
-      //     }
-      //   }
-      // });
+      // refs 就是表单校验成功之后，进行下面的操作
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.roleId != undefined) {
+            this.form.menuIds = this.getMenuAllCheckedKeys();
+            // eslint-disable-next-line no-unused-vars
+            updateRole(this.form).then(response => {
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+          } else {
+            this.form.menuIds = this.getMenuAllCheckedKeys();
+            // eslint-disable-next-line no-unused-vars
+            addRole(this.form).then(response => {
+              this.$modal.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
+      });
     },
     // 表单重置
     reset() {
       if (this.$refs.menu != undefined) {
         this.$refs.menu.setCheckedKeys([]);
       }
+      //默认值
       this.menuExpand = false,
         this.menuNodeAll = false,
         this.deptExpand = true,
@@ -452,6 +455,16 @@ export default {
       } else if (type == 'dept') {
         this.form.deptCheckStrictly = value ? true: false;
       }
+    },
+    // 所有菜单节点数据
+    getMenuAllCheckedKeys() {
+      // 目前被选中的菜单节点，叶子结点（最下面的那一个，有路由的）
+      let checkedKeys = this.$refs.menu.getCheckedKeys();
+      // 半选中的菜单节点（父节点，菜单父目录，没有路由的）
+      let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
+      //将 半选中和选中 的菜单 id 全部放到一个数组中
+      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      return checkedKeys;
     },
   }
 }
