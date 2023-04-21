@@ -68,6 +68,8 @@
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
+        <!--single 只是一个变量，true 或则 false，true 可以选，false 禁选-->
+        <!--左侧的多选框，如果是多选的话，就禁用，单选才能点击 修改-->
         <el-button
           type="success"
           plain
@@ -78,6 +80,8 @@
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
+        <!--multiple 只是一个变量，true 或则 false，true 可以选，false 禁选-->
+        <!--没选择的时候，禁用，只要选了，就能点击 删除-->
         <el-button
           type="danger"
           plain
@@ -100,6 +104,7 @@
     </el-row>
 
     <!--显示的  role 角色列表-->
+    <!--handleSelectionChange，就是list数据列表，左边显示的 小方框，点击就是代表选中的那一个-->
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <!--prop 属性，双向绑定-->
@@ -228,8 +233,8 @@
 <script>
 
 
-import { addRole, listRole, updateRole } from '@/api/system/role'
-import { treeselect as menuTreeselect } from '@/api/system/menu'
+import { addRole, delRole, getRole, listRole, updateRole } from '@/api/system/role'
+import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu'
 
 export default {
   name: "Role",
@@ -344,6 +349,39 @@ export default {
         }
       );
     },
+    /** 修改按钮操作 */
+    //展示原来 role 的数据到对应的位置
+    handleUpdate(row) {
+      this.reset();
+      //修改的 role 的 id
+      const roleId = row.roleId || this.ids
+      //选过的 菜单
+      const roleMenu = this.getRoleMenuTreeselect(roleId);
+      getRole(roleId).then(response => {
+        //显示对应的 role 的数据到对应的文本框
+        this.form = response.data;
+        this.open = true;
+        this.$nextTick(() => {
+          roleMenu.then(res => {
+            let checkedKeys = res.checkedKeys
+            checkedKeys.forEach((v) => {
+              //将上面的 菜单id 进行选中，展示
+              this.$nextTick(()=>{
+                this.$refs.menu.setChecked(v, true ,false);
+              })
+            })
+          });
+        });
+        this.title = "修改角色";
+      });
+    },
+    /** 根据角色ID查询菜单树结构 */
+    getRoleMenuTreeselect(roleId) {
+      return roleMenuTreeselect(roleId).then(response => {
+        this.menuOptions = response.menus;
+        return response;
+      });
+    },
     /** 搜索按钮操作 */
     handleQuery() {
       //搜索出来的东西，跳到第一页进行展示
@@ -384,18 +422,24 @@ export default {
         if (valid) {
           if (this.form.roleId != undefined) {
             this.form.menuIds = this.getMenuAllCheckedKeys();
+            //后端的接口，更新 role  角色
             // eslint-disable-next-line no-unused-vars
             updateRole(this.form).then(response => {
+              //提示窗口
               this.$modal.msgSuccess("修改成功");
               this.open = false;
+              //重新展示数据
               this.getList();
             });
           } else {
             this.form.menuIds = this.getMenuAllCheckedKeys();
+            //请求后端接口，api 进行添加 role角色，进行对数据库的操作
             // eslint-disable-next-line no-unused-vars
             addRole(this.form).then(response => {
+              //提示窗口
               this.$modal.msgSuccess("新增成功");
               this.open = false;
+              //重新获取数据，重新在页面进行  list  数据的展示
               this.getList();
             });
           }
@@ -465,6 +509,24 @@ export default {
       //将 半选中和选中 的菜单 id 全部放到一个数组中
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
+    },
+    // list 数据的左侧的多选框选中
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.roleId)
+      //修改，只能单选的时候，可以点击
+      this.single = selection.length!==1
+      //删除，只要选了，就可以点击
+      this.multiple = !selection.length
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const roleIds = row.roleId || this.ids;
+      this.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项？').then(function() {
+        return delRole(roleIds);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {});
     },
   }
 }

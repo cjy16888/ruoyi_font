@@ -7,6 +7,7 @@ import Element from "element-ui"
 import 'element-ui/lib/theme-chalk/index.css'
 //需要将 permission.js 手动引进到 main.js 实现全局配置，不然不会进行生效的
 import './permission' // permission control
+import plugins from '@/plugins'
 
 import './assets/styles/element-variables.scss'
 import '@/assets/styles/index.scss' // global css
@@ -25,6 +26,7 @@ import { addDateRange } from '@/utils/ruoyi'
 
 Vue.config.productionTip = false
 Vue.use(Element)
+Vue.use(plugins)
 Vue.component('RightToolbar',rightToolbar)
 //全局使用  字典数据
 DictData.install()
