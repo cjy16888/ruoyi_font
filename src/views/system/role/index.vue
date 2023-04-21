@@ -422,6 +422,36 @@ export default {
         };
       this.resetForm("form");
     },
+    // menu 树权限（展开/折叠）
+    handleCheckedTreeExpand(value, type) {
+      if (type == 'menu') {
+        let treeList = this.menuOptions;
+        for (let i = 0; i < treeList.length; i++) {
+          this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value;
+        }
+      } else if (type == 'dept') {
+        let treeList = this.deptOptions;
+        for (let i = 0; i < treeList.length; i++) {
+          this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value;
+        }
+      }
+    },
+    // 树权限（全选/全不选）
+    handleCheckedTreeNodeAll(value, type) {
+      if (type == 'menu') {
+        this.$refs.menu.setCheckedNodes(value ? this.menuOptions: []);
+      } else if (type == 'dept') {
+        this.$refs.dept.setCheckedNodes(value ? this.deptOptions: []);
+      }
+    },
+    // 树权限（父子联动）
+    handleCheckedTreeConnect(value, type) {
+      if (type == 'menu') {
+        this.form.menuCheckStrictly = value ? true: false;
+      } else if (type == 'dept') {
+        this.form.deptCheckStrictly = value ? true: false;
+      }
+    },
   }
 }
 </script>
