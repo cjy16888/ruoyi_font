@@ -185,14 +185,15 @@
           <el-input-number v-model="form.roleSort" controls-position="right" :min="0" />
         </el-form-item>
         <el-form-item label="状态">
+          <!--通过字典获取，因为 字典是挂载到每一个组件上面的，独有的，和全局变量不一样-->
           <el-radio-group v-model="form.status">
-            <el-radio>正常</el-radio>
-            <el-radio>停用</el-radio>
-            <!--<el-radio-->
-            <!--  v-for="dict in dict.type.sys_normal_disable"-->
-            <!--  :key="dict.value"-->
-            <!--  :label="dict.value"-->
-            <!--&gt;{{dict.label}}</el-radio>-->
+            <!--<el-radio>正常</el-radio>-->
+            <!--<el-radio>停用</el-radio>-->
+            <el-radio
+              v-for="dict in dict.type.sys_normal_disable"
+              :key="dict.value"
+              :label="dict.value"
+            >{{dict.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单权限">

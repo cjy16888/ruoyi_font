@@ -18,12 +18,16 @@ import rightToolbar from '@/components/RightToolbar'
 import resetForm from "@/utils/ruoyi";
 // 分页组件
 import Pagination from "@/components/Pagination";
+// 字典数据组件
+import DictData from '@/components/DictData'
 
 import { addDateRange } from '@/utils/ruoyi'
 
 Vue.config.productionTip = false
 Vue.use(Element)
 Vue.component('RightToolbar',rightToolbar)
+//全局使用  字典数据
+DictData.install()
 
 // 全局方法挂载
 Vue.prototype.addDateRange = addDateRange
