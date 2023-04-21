@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 //需要将 permission.js 手动引进到 main.js 实现全局配置，不然不会进行生效的
 import './permission' // permission control
 import plugins from '@/plugins'
+import { download } from '@/utils/request'
 
 import './assets/styles/element-variables.scss'
 import '@/assets/styles/index.scss' // global css
@@ -35,6 +36,7 @@ DictData.install()
 Vue.prototype.addDateRange = addDateRange
 Vue.component('Pagination', Pagination)
 Vue.prototype.resetForm = resetForm
+Vue.prototype.download = download
 
 new Vue({
   router,

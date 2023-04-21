@@ -1,12 +1,15 @@
 //导入依赖中的包 axios，进行发送请求使用
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
+import { Loading, Message, MessageBox } from 'element-ui'
 import { getToken } from '@/utils/auth'
 import store from '@/store'
-import { tansParams } from '@/utils/ruoyi'
+import { blobValidate, tansParams } from '@/utils/ruoyi'
+import { saveAs } from 'file-saver'
+import errorCode from '@/utils/errorCode'
 
 // 是否显示重新登录（token过期）
 export let isRelogin = { show: false };
+let downloadLoadingInstance;
 
 // 创建axios实例,类似 java 中的封装，工具类
 const service = axios.create({
@@ -37,6 +40,7 @@ service.interceptors.request.use(config => {
     config.params = {};
     config.url = url;
   }
+
   return config
 }, error => {
   console.log(error)
@@ -47,6 +51,11 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(res => {
   const code = res.data.code
   const msg = res.data.msg
+
+  // 二进制数据则直接返回, 比如  导出文件（下载），后端response的就是二进制文件
+  if(res.request.responseType ===  'blob' || res.request.responseType ===  'arraybuffer'){
+    return res.data
+  }
 
   //前端访问后台的时候，加入没携带 token 的话，那么就会报错 401，需要进行重新 login
   if (code === 401) {
@@ -101,6 +110,35 @@ service.interceptors.response.use(res => {
     return Promise.reject(error)
   }
 )
+
+// 通用下载方法
+export function download(url, params, filename, config) {
+  //点击 导出，下载的提示信息
+  downloadLoadingInstance = Loading.service({ text: "正在下载数据，请稍候", spinner: "el-icon-loading", background: "rgba(0, 0, 0, 0.7)", })
+  return service.post(url, params, {
+    //需要导出的数据 id，什么都没选的话，代表的是全部导出
+    transformRequest: [(params) => { return tansParams(params) }],
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    responseType: 'blob',
+    ...config
+  }).then(async (data) => {
+    const isLogin = await blobValidate(data);
+    if (isLogin) {
+      const blob = new Blob([data])
+      saveAs(blob, filename)
+    } else {
+      const resText = await data.text();
+      const rspObj = JSON.parse(resText);
+      const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
+      Message.error(errMsg);
+    }
+    downloadLoadingInstance.close();
+  }).catch((r) => {
+    console.error(r)
+    Message.error('下载文件出现错误，请联系管理员！')
+    downloadLoadingInstance.close();
+  })
+}
 
 //将 service 导出去，给其他文件进行使用
 export default service

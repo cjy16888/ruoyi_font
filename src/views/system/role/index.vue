@@ -97,6 +97,7 @@
           plain
           icon="el-icon-download"
           size="mini"
+          @click="handleExport"
           v-hasPermi="['system:role:export']"
         >导出</el-button>
       </el-col>
@@ -528,6 +529,14 @@ export default {
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
     },
+    /** 导出按钮操作 */
+    //主要逻辑是后端实现的，前端只需要进行调用 api 接口就可以了
+    handleExport() {
+      this.download('system/role/export', {
+        //查询条件
+        ...this.queryParams
+      }, `role_${new Date().getTime()}.xlsx`)  //  文件的名字的拼接   xlsx文件后缀
+    }
   }
 }
 </script>
