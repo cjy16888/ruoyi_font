@@ -7,7 +7,7 @@
       <el-tooltip class="item" effect="dark" content="刷新" placement="top">
         <el-button size="mini" circle icon="el-icon-refresh" @click="refresh()" />
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="显隐列" placement="top" v-if="columns">
+      <el-tooltip class="item" effect="dark" content="显隐列" placement="top" >
         <el-button size="mini" circle icon="el-icon-menu" @click="showColumn()" />
       </el-tooltip>
     </el-row>
@@ -71,6 +71,8 @@ export default {
   methods: {
     // 搜索
     toggleSearch() {
+      console.log("隐藏/显示搜索")
+      //应该是这个  this  没有生效的原因
       this.$emit("update:showSearch", !this.showSearch);
     },
     // 刷新
@@ -78,12 +80,14 @@ export default {
       this.$emit("queryTable");
     },
     // 右侧列表元素变化
+    //就是左边的选择，转移到右边
     // eslint-disable-next-line no-unused-vars
     dataChange(data) {
-      // for (let item in this.columns) {
-      //   const key = this.columns[item].key;
-      //   this.columns[item].visible = !data.includes(key);
-      // }
+      for (let item in this.columns) {
+        const key = this.columns[item].key;
+        // eslint-disable-next-line vue/no-mutating-props
+        this.columns[item].visible = !data.includes(key);
+      }
     },
     // 打开显隐列dialog
     showColumn() {
