@@ -14,7 +14,6 @@ import './assets/styles/element-variables.scss'
 import '@/assets/styles/index.scss' // global css
 import '@/assets/styles/ruoyi.scss' // ruoyi css
 import '@/assets/icons'
-import rightToolbar from '@/components/RightToolbar'
 
 
 import resetForm from "@/utils/ruoyi";
@@ -22,13 +21,15 @@ import resetForm from "@/utils/ruoyi";
 import Pagination from "@/components/Pagination";
 // 字典数据组件
 import DictData from '@/components/DictData'
+// 自定义表格工具组件
+import RightToolbar from "@/components/RightToolbar"
 
 import { addDateRange } from '@/utils/ruoyi'
 
 Vue.config.productionTip = false
 Vue.use(Element)
 Vue.use(plugins)
-Vue.component('RightToolbar',rightToolbar)
+Vue.component('RightToolbar',RightToolbar)
 //全局使用  字典数据
 DictData.install()
 
