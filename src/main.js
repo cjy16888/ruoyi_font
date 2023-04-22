@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import Element from "element-ui"
+import directive from './directive' // directive，权限管理
 import 'element-ui/lib/theme-chalk/index.css'
 //需要将 permission.js 手动引进到 main.js 实现全局配置，不然不会进行生效的
 import './permission' // permission control
@@ -27,6 +28,7 @@ import RightToolbar from "@/components/RightToolbar"
 import { addDateRange } from '@/utils/ruoyi'
 
 Vue.config.productionTip = false
+Vue.use(directive)
 Vue.use(Element)
 Vue.use(plugins)
 Vue.component('RightToolbar',RightToolbar)

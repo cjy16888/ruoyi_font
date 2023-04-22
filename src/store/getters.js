@@ -6,7 +6,8 @@ const getters = {
   sidebarRouters:state => state.permission.sidebarRouters,
   sidebar: state => state.app.sidebar,
   //获取用户头像的地址
-  avatar: state => state.user.avatar
+  avatar: state => state.user.avatar,
+  permissions: state => state.user.permissions,
 }
 
 
